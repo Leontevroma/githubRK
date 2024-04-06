@@ -1,0 +1,78 @@
+# используется для сортировки
+from operator import itemgetter
+
+
+class Disc:
+    """CD диск"""
+    def __init__(self, id, fname, weig, lib_id):
+        self.id = id
+        self.fname = fname
+        self.weig = weig
+        self.lib_id = lib_id
+
+
+class Lib:
+    """Библиотека CD файлов"""
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+
+# Библиотеки
+Lib = [
+    Lib(1, 'Системные файлы'),
+    Lib(2, 'Программы'),
+    Lib(3, 'Пользовательские'),
+    Lib(4, 'Длительное хранение'),
+    Lib(5, 'Специальные'),
+    
+]
+
+
+# Диски
+Disc = [
+    Disc(1, 'Books', 5000, 4),
+    Disc(2, 'Music', 10000, 3),
+    Disc(3, 'Windows', 15000, 1),
+    Disc(4, 'Linux', 5000, 1),
+    Disc(5, 'Setup files', 25000, 5),
+    Disc(6, 'Adobe', 30000, 2),
+]
+
+
+def main():
+    """Основная функция"""
+
+
+    # Соединение данных один-ко-многим 
+    one_to_many = [(e.fname, e.weig, d.name) 
+        for d in Lib 
+        for e in Disc 
+        if e.lib_id==d.id]
+    
+    print('Задание 1')
+    res_11 = sorted(one_to_many, key=itemgetter(2))
+    print(res_11)
+    
+    print('\nЗадание 2')
+    res_12_unsorted = []
+    # Перебираем все Библиотеки
+    for d in Lib:
+        # Список Дисков Библиотеки
+        d_disc = list(filter(lambda i: i[2]==d.name, one_to_many))
+        # Если библиотека не пустая        
+        if len(d_disc) > 0:
+            # Занятый объем дисков библиотеки
+            d_weig = [weig for _,weig,_ in d_disc]
+            # Суммарный занятый объем дисков библиотеки
+            d_weig_sum = sum(d_weig)
+            res_12_unsorted.append((d.name, d_weig_sum))
+
+
+    # Сортировка по суммарному занятому объему
+    res_12 = sorted(res_12_unsorted, key=itemgetter(1), reverse=True)
+    print(res_12)
+
+
+if __name__ == '__main__':
+    main()
